@@ -51,7 +51,7 @@ text=df["text"].astype("U").to_numpy().ravel()
 
 #under sampling the data
 df=downsample(df,"polarity")
-df=slice(df=df,ratio=0.05)
+#df=slice(df=df,ratio=0.05)
 print(df["polarity"].value_counts())
 
 #split lables and data
@@ -96,9 +96,5 @@ print("TF-IDF accuracy : ")
 print(TF_IDFscore)
 print("CountVectorizer accuracy : ")
 print(CVscore)
-
-
-
-
 
 
