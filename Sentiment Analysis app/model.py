@@ -44,7 +44,7 @@ dicm ={1:"naive bayas",2:"logistic regression",3:"SVM",4:"random forest"}
 models=[NBmodel,LRmodel,SVMmodel,RFmodel]
 
 #load the text
-df=pd.read_csv("data sets/PROD.csv",encoding="utf-8")
+df=pd.read_csv("data sets/MOV_.csv",encoding="utf-8")
 print(df.head())
 print(df["polarity"].value_counts())
 text=df["text"].astype("U").to_numpy().ravel()
@@ -74,8 +74,8 @@ for k in range(0,len(TF_IDF)):
         models[j].fit(x_train, y_train)
         y_pred = models[j].predict(x_test)
         y_pred2 = models[j].predict(x_train)
-        scores[j, 1, k] = sk.metrics.accuracy_score(y_true=y_test, y_pred=y_pred)
-        train_score = sk.metrics.accuracy_score(y_true=y_train, y_pred=y_pred2)
+        scores[j, 1, k] = sk.metrics.f1_score(y_true=y_test, y_pred=y_pred,average="micro")
+        train_score = sk.metrics.f1_score(y_true=y_train, y_pred=y_pred2,average="micro")
         print("the model "+dicm[j+1]+" using TF-IDF "+str(k+1)+" gram accuray { train :"+str(train_score)+"-- test :"+str(scores[j,1,k])+" }")
 
 for i in range(0, len(CV)):
@@ -85,8 +85,8 @@ for i in range(0, len(CV)):
         models[j].fit(x_train, y_train)
         y_pred = models[j].predict(x_test)
         y_pred2 = models[j].predict(x_train)
-        scores[j, 0, i] = sk.metrics.accuracy_score(y_true=y_test, y_pred=y_pred)
-        train_score = sk.metrics.accuracy_score(y_true=y_train, y_pred=y_pred2)
+        scores[j, 0, i] = sk.metrics.f1_score(y_true=y_test, y_pred=y_pred,average="micro")
+        train_score = sk.metrics.f1_score(y_true=y_train, y_pred=y_pred2,average="micro")
         print("the model " + dicm[j + 1] + " using countvectorizer " + str(i + 1) + " gram accuray { train :" + str(train_score) + "-- test :" + str(scores[j, 0, i]) + " }")
 
 TF_IDFscore=pd.DataFrame(columns=["1-gram","2-gram","3-gram"],index=["naive bayas","logistic regression","SVM","random forest"],data=scores[:,1,:])
