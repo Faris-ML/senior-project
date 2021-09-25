@@ -44,13 +44,13 @@ dicm ={1:"naive bayas",2:"logistic regression",3:"SVM",4:"random forest"}
 models=[NBmodel,LRmodel,SVMmodel,RFmodel]
 
 #load the text
-df=pd.read_csv("data sets/dataset_cleand.csv",encoding="utf-8")
+df=pd.read_csv("data sets/PROD.csv",encoding="utf-8")
 print(df.head())
 print(df["polarity"].value_counts())
 text=df["text"].astype("U").to_numpy().ravel()
 
 #under sampling the data
-df=downsample(df,"polarity")
+#df=downsample(df,"polarity")
 #df=slice(df=df,ratio=0.05)
 print(df["polarity"].value_counts())
 
@@ -64,7 +64,6 @@ X_train,X_test,y_train,y_test=sk.model_selection.train_test_split(X,Y,test_size=
 TF_IDF=[TfidfVectorizer(ngram_range=(1,1)).fit(text),TfidfVectorizer(ngram_range=(1,2)).fit(text),TfidfVectorizer(ngram_range=(1,3)).fit(text)]
 CV=[CountVectorizer(ngram_range=(1,1)).fit(text),CountVectorizer(ngram_range=(1,2)).fit(text),CountVectorizer(ngram_range=(1,3)).fit(text)]
 
-
 #loop over models and text to number algorithims and pick the best score
 scores=np.zeros([4,2,3])
 
@@ -77,7 +76,7 @@ for k in range(0,len(TF_IDF)):
         y_pred2 = models[j].predict(x_train)
         scores[j, 1, k] = sk.metrics.accuracy_score(y_true=y_test, y_pred=y_pred)
         train_score = sk.metrics.accuracy_score(y_true=y_train, y_pred=y_pred2)
-        print("the model "+dicm[j+1]+" and TF-IDF "+str(k+1)+" gram accuray { train :"+str(train_score)+"-- test :"+str(scores[j,1,k])+" }")
+        print("the model "+dicm[j+1]+" using TF-IDF "+str(k+1)+" gram accuray { train :"+str(train_score)+"-- test :"+str(scores[j,1,k])+" }")
 
 for i in range(0, len(CV)):
     x_train = normalize(CV[i].transform(X_train.ravel()))
@@ -88,7 +87,7 @@ for i in range(0, len(CV)):
         y_pred2 = models[j].predict(x_train)
         scores[j, 0, i] = sk.metrics.accuracy_score(y_true=y_test, y_pred=y_pred)
         train_score = sk.metrics.accuracy_score(y_true=y_train, y_pred=y_pred2)
-        print("the model " + dicm[j + 1] + " and countvectorizer " + str(i + 1) + " gram accuray { train :" + str(train_score) + "-- test :" + str(scores[j, 0, i]) + " }")
+        print("the model " + dicm[j + 1] + " using countvectorizer " + str(i + 1) + " gram accuray { train :" + str(train_score) + "-- test :" + str(scores[j, 0, i]) + " }")
 
 TF_IDFscore=pd.DataFrame(columns=["1-gram","2-gram","3-gram"],index=["naive bayas","logistic regression","SVM","random forest"],data=scores[:,1,:])
 CVscore=pd.DataFrame(columns=["1-gram","2-gram","3-gram"],index=["naive bayas","logistic regression","SVM","random forest"],data=scores[:,0,:])
