@@ -44,7 +44,7 @@ dicm ={1:"naive bayas",2:"logistic regression",3:"SVM",4:"random forest"}
 models=[NBmodel,LRmodel,SVMmodel,RFmodel]
 
 #load the text
-df=pd.read_csv("data sets/MOV_.csv",encoding="utf-8")
+df=pd.read_csv("data sets/RES_.csv",encoding="utf-8")
 print(df.head())
 print(df["polarity"].value_counts())
 text=df["text"].astype("U").to_numpy().ravel()
