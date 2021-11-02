@@ -42,9 +42,10 @@ def main(datapath:string,filenames:list,savepath:string):
         print(df.head())
         df.to_csv(savepath+"/"+i+"_cleand.csv", index=False)
 
-filepath="data sets/new"
-file_names=["movies","hotels","resturant"]
-main(datapath=filepath,filenames=file_names,savepath="data sets")
+def excute():
+    filepath = "data sets/new"
+    file_names = ["movies", "hotels", "resturant"]
+    main(datapath=filepath, filenames=file_names, savepath="data sets")
 
 
 
