@@ -7,6 +7,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn import preprocessing
 import numpy as np
 import pandas as pd
+import pickle as pkl
 
 def downsample(df:pd.DataFrame, label_col_name:str) -> pd.DataFrame:
     # find the number of observations in the smallest group
@@ -44,7 +45,7 @@ dicm ={1:"naive bayas",2:"logistic regression",3:"SVM",4:"random forest"}
 models=[NBmodel,LRmodel,SVMmodel,RFmodel]
 
 #load the text
-df=pd.read_csv("data sets/RES_.csv",encoding="utf-8")
+df=pd.read_csv("data sets/resturant_cleand.csv",encoding="utf-8")
 print(df.head())
 print(df["polarity"].value_counts())
 text=df["text"].astype("U").to_numpy().ravel()
@@ -59,7 +60,7 @@ Y=df["polarity"]
 X=df["text"].astype("U").to_numpy()
 
 #split to train and test set
-X_train,X_test,y_train,y_test=sk.model_selection.train_test_split(X,Y,test_size=0.08)
+X_train,X_test,y_train,y_test=sk.model_selection.train_test_split(X,Y,test_size=0.1)
 #make a list of n-gram text to number algorithm  to loop over it
 TF_IDF=[TfidfVectorizer(ngram_range=(1,1)).fit(text),TfidfVectorizer(ngram_range=(1,2)).fit(text),TfidfVectorizer(ngram_range=(1,3)).fit(text)]
 CV=[CountVectorizer(ngram_range=(1,1)).fit(text),CountVectorizer(ngram_range=(1,2)).fit(text),CountVectorizer(ngram_range=(1,3)).fit(text)]
@@ -95,5 +96,20 @@ print("TF-IDF accuracy : ")
 print(TF_IDFscore)
 print("CountVectorizer accuracy : ")
 print(CVscore)
-
-
+TF_IDFscore.to_csv('Resturant_TF-IDF_score.csv')
+CVscore.to_csv('Resturant_CV_score.csv')
+TFindx=np.unravel_index(np.argmax(TF_IDFscore, axis=None), TF_IDFscore.shape)
+CVindx=np.unravel_index(np.argmax(CVscore, axis=None), CVscore.shape)
+print(TF_IDFscore.iloc[TFindx],"---",CVscore.iloc[CVindx])
+if TF_IDFscore.iloc[TFindx] > CVscore.iloc[CVindx]:
+    print("choosen settings - [TF-IDF ,",TFindx[1]+1,"-gram,",dicm[TFindx[0]+1],"]")
+    TransformerName="RES_TF-IDF.sav"
+    pkl.dump(TF_IDF[TFindx[1]], open(TransformerName, 'wb'))
+    ModelName="RES_TF-IDF_model.sav"
+    pkl.dump(models[TFindx[0]], open(ModelName, 'wb'))
+else:
+    print("choosen settings - [CountVictorizer ,", CVindx[1] + 1, "-gram,", dicm[CVindx[0] + 1],"]")
+    TransformerName = "RES_CV.sav"
+    pkl.dump(CV[TFindx[1]], open(TransformerName, 'wb'))
+    ModelName = "RES_CV_model.sav"
+    pkl.dump(models[TFindx[0]], open(ModelName, 'wb'))
