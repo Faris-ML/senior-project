@@ -45,7 +45,7 @@ dicm ={1:"naive bayas",2:"logistic regression",3:"SVM",4:"random forest"}
 models=[NBmodel,LRmodel,SVMmodel,RFmodel]
 
 #load the text
-df=pd.read_csv("data sets/resturant_cleand.csv",encoding="utf-8")
+df=pd.read_csv("data sets/new/hotels.csv",encoding="utf-8")
 print(df.head())
 print(df["polarity"].value_counts())
 text=df["text"].astype("U").to_numpy().ravel()
@@ -96,20 +96,6 @@ print("TF-IDF accuracy : ")
 print(TF_IDFscore)
 print("CountVectorizer accuracy : ")
 print(CVscore)
-TF_IDFscore.to_csv('Resturant_TF-IDF_score.csv')
-CVscore.to_csv('Resturant_CV_score.csv')
-TFindx=np.unravel_index(np.argmax(TF_IDFscore, axis=None), TF_IDFscore.shape)
-CVindx=np.unravel_index(np.argmax(CVscore, axis=None), CVscore.shape)
-print(TF_IDFscore.iloc[TFindx],"---",CVscore.iloc[CVindx])
-if TF_IDFscore.iloc[TFindx] > CVscore.iloc[CVindx]:
-    print("choosen settings - [TF-IDF ,",TFindx[1]+1,"-gram,",dicm[TFindx[0]+1],"]")
-    TransformerName="RES_TF-IDF.sav"
-    pkl.dump(TF_IDF[TFindx[1]], open(TransformerName, 'wb'))
-    ModelName="RES_TF-IDF_model.sav"
-    pkl.dump(models[TFindx[0]], open(ModelName, 'wb'))
-else:
-    print("choosen settings - [CountVictorizer ,", CVindx[1] + 1, "-gram,", dicm[CVindx[0] + 1],"]")
-    TransformerName = "RES_CV.sav"
-    pkl.dump(CV[TFindx[1]], open(TransformerName, 'wb'))
-    ModelName = "RES_CV_model.sav"
-    pkl.dump(models[TFindx[0]], open(ModelName, 'wb'))
+TF_IDFscore.to_csv('Hotels_TF-IDF_score.csv')
+CVscore.to_csv('Hotels_CV_score.csv')
+

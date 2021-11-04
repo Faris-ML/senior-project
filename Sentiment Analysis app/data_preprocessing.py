@@ -2,7 +2,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from nltk.corpus import stopwords
 import nltk
-import re
 import string
 nltk.download('stopwords')
 
